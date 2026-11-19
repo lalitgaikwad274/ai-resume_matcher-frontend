@@ -1,8 +1,8 @@
 import axios from 'axios';
 import type { AnalysisResult } from '../types/analysis';
-
+const isProd = true
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: isProd ? "https://ai-resume-job-macher.onrender.com/" : import.meta.env.VITE_API_BASE_URL,
   timeout: 120000,
 });
 

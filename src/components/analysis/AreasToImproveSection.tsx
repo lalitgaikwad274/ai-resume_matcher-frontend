@@ -45,27 +45,6 @@ export const AreasToImproveSection: React.FC<AreasToImproveSectionProps> = ({
 }) => {
   const scoreVal = Math.min(100, Math.max(0, Math.round(matchScore)));
 
-  const getCardGraphic = (title: string, index: number) => {
-    const lower = title.toLowerCase();
-    if (
-      lower.includes('mobile') ||
-      lower.includes('react') ||
-      lower.includes('native') ||
-      index === 0
-    ) {
-      return <MobileReactGraphic />;
-    }
-    if (
-      lower.includes('django') ||
-      lower.includes('python') ||
-      lower.includes('framework') ||
-      index === 1
-    ) {
-      return <LaptopPythonGraphic />;
-    }
-    return <DatabaseGearGraphic />;
-  };
-
   return (
     <div className="view-container view-areas-to-improve">
       {/* Header: Needs Attention + Your Career Goal Banner + Illustration */}
@@ -137,9 +116,6 @@ export const AreasToImproveSection: React.FC<AreasToImproveSectionProps> = ({
                   {/* Left: Number + Vector Graphic */}
                   <div className="card-identity-col">
                     <span className="card-number-label">{itemNum}</span>
-                    {/* <div className="card-illustration-wrap">
-                      {getCardGraphic(item.title, index)}
-                    </div> */}
                   </div>
 
                   {/* Middle: Content */}

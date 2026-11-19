@@ -103,8 +103,6 @@ export default function AnalysisPage({ result, onAnalyzeAnother }: Props) {
         <ReportTopHeader
           candidateLabel={getCandidateMeta()}
           jobTitle={result.job_title || 'Python developer'}
-          activeNav={activeNav}
-          onSelectNav={setActiveNav}
           onDownloadReport={() => generateAnalysisPDF(result)}
           onAnalyzeAnother={onAnalyzeAnother}
           onOpenMobileMenu={() => setMobileMenuOpen(true)}

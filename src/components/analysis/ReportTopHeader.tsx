@@ -11,8 +11,6 @@ import {
 interface ReportTopHeaderProps {
   candidateLabel: string;
   jobTitle: string;
-  activeNav: string;
-  onSelectNav: (tab: string) => void;
   onDownloadReport: () => void;
   onAnalyzeAnother: () => void;
   onOpenMobileMenu: () => void;
@@ -21,8 +19,6 @@ interface ReportTopHeaderProps {
 export const ReportTopHeader: React.FC<ReportTopHeaderProps> = ({
   candidateLabel,
   jobTitle,
-  activeNav,
-  onSelectNav,
   onDownloadReport,
   onAnalyzeAnother,
   onOpenMobileMenu,
