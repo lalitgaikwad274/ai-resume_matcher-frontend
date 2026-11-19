@@ -4,12 +4,16 @@ interface Props {
   title: string;
   description: string;
   type: 'success' | 'warning' | 'info';
+  actionable?: string;
+  badge?: string;
 }
 
 export default function RecommendationCard({
   title,
   description,
   type,
+  actionable,
+  badge,
 }: Props) {
   const icons = {
     success: <CheckCircle2 />,
@@ -23,9 +27,21 @@ export default function RecommendationCard({
         {icons[type]}
       </div>
 
-      <div>
-        <h3>{title}</h3>
+      <div className="recommendation-body">
+        <div className="recommendation-header-row">
+          <h3>{title}</h3>
+          {badge && (
+            <span className={`priority-badge priority-${badge.toLowerCase()}`}>
+              {badge} Priority
+            </span>
+          )}
+        </div>
         <p>{description}</p>
+        {actionable && (
+          <div className="recommendation-actionable">
+            <strong>How to improve:</strong> {actionable}
+          </div>
+        )}
       </div>
     </div>
   );

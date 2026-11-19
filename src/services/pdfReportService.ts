@@ -1,35 +1,32 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-import type { AnalysisResult } from '../types/analysis';
-import type { ResumeRecommendation } from '../types/recommendation';
+import type { AnalysisResult, Education } from '../types/analysis';
+import type { AIRecommendations } from '../types/recommendation';
 
-export function generateAnalysisPDF(
-  result: AnalysisResult,
-) {
+export function generateAnalysisPDF(result: AnalysisResult) {
   const pdf = new jsPDF();
 
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 15;
 
-  const recommendations =
-    result.ai_recommendations as
-      | ResumeRecommendation
-      | undefined;
+  const recommendations = result.ai_recommendations as
+    | AIRecommendations
+    | undefined;
 
   let y = 20;
 
   const addHeading = (title: string) => {
-    if (y > 260) {
+    if (y > 255) {
       pdf.addPage();
       y = 20;
     }
 
-    pdf.setFontSize(15);
+    pdf.setFontSize(14);
     pdf.setFont('helvetica', 'bold');
     pdf.text(title, margin, y);
 
-    y += 10;
+    y += 9;
   };
 
   const addText = (text: string) => {
@@ -47,7 +44,12 @@ export function generateAnalysisPDF(
     pdf.setFont('helvetica', 'normal');
     pdf.text(lines, margin, y);
 
-    y += lines.length * 6 + 3;
+    y += lines.length * 5.5 + 3;
+  };
+
+  const formatEducation = (edu: Education) => {
+    if (typeof edu === 'string') return edu;
+    return [edu.degree, edu.institution, edu.dates].filter(Boolean).join(' • ');
   };
 
   // Header
@@ -55,115 +57,180 @@ export function generateAnalysisPDF(
   pdf.setFont('helvetica', 'bold');
   pdf.text('AI Resume Analysis Report', margin, y);
 
-  y += 12;
+  y += 11;
 
   pdf.setFontSize(10);
   pdf.setFont('helvetica', 'normal');
 
-  pdf.text(
-    `Resume: ${result.filename}`,
-    margin,
-    y,
-  );
+  const resumeName =
+    result.resume_analysis?.filename || result.filename || 'Resume';
+  pdf.text(`Resume: ${resumeName}`, margin, y);
 
-  y += 15;
+  if (result.job_title) {
+    y += 6;
+    pdf.text(`Target Job Title: ${result.job_title}`, margin, y);
+  }
+
+  y += 12;
 
   // Match score
   addHeading('1. Job Match Overview');
 
-  pdf.setFontSize(30);
+  pdf.setFontSize(26);
   pdf.setFont('helvetica', 'bold');
+  pdf.text(`${result.match_analysis.match_score}%`, margin, y);
 
-  pdf.text(
-    `${result.match_analysis.match_score}%`,
-    margin,
-    y,
-  );
+  y += 10;
 
-  y += 12;
+  if (result.match_analysis.required_coverage != null) {
+    addText(
+      `Required Skills Match: ${result.match_analysis.required_coverage}%`,
+    );
+  }
 
-  addText(
-    `Text similarity: ${result.text_similarity}%`,
-  );
+  addText(`Text Similarity: ${result.text_similarity}%`);
+
+  // Overall feedback
+  if (recommendations?.overall_feedback) {
+    addHeading('2. Executive Summary');
+    addText(recommendations.overall_feedback);
+  }
 
   // Required skills
-  addHeading('2. Required Skills');
+  addHeading('3. Required Skills');
 
-  const comparison =
-    result.match_analysis.comparison;
+  const matchedRequired = result.match_analysis.matched_required || [];
+  const missingRequired = result.match_analysis.missing_required || [];
 
   autoTable(pdf, {
     startY: y,
-    head: [['Matched Skills', 'Missing Skills']],
-    body: [[
-      comparison.matched_required.join(', ') || 'None',
-      comparison.missing_required.join(', ') || 'None',
-    ]],
+    head: [['Matched Required Skills', 'Missing Required Skills']],
+    body: [
+      [
+        matchedRequired.join(', ') || 'None',
+        missingRequired.join(', ') || 'None',
+      ],
+    ],
     theme: 'grid',
+    styles: { fontSize: 9, cellPadding: 4 },
+    headStyles: { fillColor: [99, 91, 219] },
   });
 
-  y = (pdf as any).lastAutoTable.finalY + 12;
+  y = (pdf as any).lastAutoTable.finalY + 10;
 
   // Preferred skills
-  addHeading('3. Preferred Skills');
+  const matchedPreferred = result.match_analysis.matched_preferred || [];
+  const missingPreferred = result.match_analysis.missing_preferred || [];
 
-  autoTable(pdf, {
-    startY: y,
-    head: [['Matched Skills', 'Missing Skills']],
-    body: [[
-      comparison.matched_preferred.join(', ') || 'None',
-      comparison.missing_preferred.join(', ') || 'None',
-    ]],
-    theme: 'grid',
-  });
+  if (
+    matchedPreferred.length > 0 ||
+    missingPreferred.length > 0 ||
+    result.match_analysis.preferred_total > 0
+  ) {
+    addHeading('4. Preferred Skills');
 
-  y = (pdf as any).lastAutoTable.finalY + 12;
+    autoTable(pdf, {
+      startY: y,
+      head: [['Matched Preferred Skills', 'Missing Preferred Skills']],
+      body: [
+        [
+          matchedPreferred.join(', ') || 'None',
+          missingPreferred.join(', ') || 'None',
+        ],
+      ],
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 4 },
+      headStyles: { fillColor: [100, 116, 139] },
+    });
+
+    y = (pdf as any).lastAutoTable.finalY + 10;
+  }
 
   // Resume information
-  addHeading('4. Resume Information');
+  addHeading('5. Resume Background');
 
-  addText(
-    `Skills identified: ${result.resume_analysis.skills
-      ? Object.values(result.resume_analysis.skills)
-          .flat()
-          .join(', ')
-      : 'Not available'}`,
-  );
+  if (result.resume_analysis?.skills) {
+    const allSkills = Object.values(result.resume_analysis.skills)
+      .flat()
+      .join(', ');
+    addText(`Skills Identified (${result.resume_analysis.total_skills}): ${allSkills || 'None'}`);
+  }
 
-  addText(
-    `Experience: ${result.resume_analysis.experience_mentions.join(', ')}`,
-  );
+  if (
+    result.resume_analysis?.experience_mentions &&
+    result.resume_analysis.experience_mentions.length > 0
+  ) {
+    addText(
+      `Experience: ${result.resume_analysis.experience_mentions
+        .map((item) => (!isNaN(Number(item)) ? `${item} years` : item))
+        .join(', ')}`,
+    );
+  }
 
-  addText(
-    `Education: ${result.resume_analysis.education.join(', ')}`,
-  );
+  if (
+    result.resume_analysis?.education &&
+    result.resume_analysis.education.length > 0
+  ) {
+    addText(
+      `Education: ${result.resume_analysis.education
+        .map(formatEducation)
+        .join(', ')}`,
+    );
+  }
 
   // AI recommendations
   if (recommendations) {
-    addHeading('5. AI Strengths');
+    if (recommendations.strengths && recommendations.strengths.length > 0) {
+      addHeading('6. Candidate Strengths');
+      recommendations.strengths.forEach((item) => {
+        addText(`• ${item.title}: ${item.explanation}`);
+      });
+    }
 
-    recommendations.strengths.forEach((item) => {
-      addText(`${item.title}: ${item.description}`);
-    });
+    if (recommendations.weaknesses && recommendations.weaknesses.length > 0) {
+      addHeading('7. Areas to Improve');
+      recommendations.weaknesses.forEach((item) => {
+        let text = `• ${item.title}: ${item.explanation}`;
+        if (item.improvement) {
+          text += `\n  Improvement: ${item.improvement}`;
+        }
+        addText(text);
+      });
+    }
 
-    addHeading('6. Areas to Improve');
+    if (
+      recommendations.bullet_improvements &&
+      recommendations.bullet_improvements.length > 0
+    ) {
+      addHeading('8. Resume Bullet Improvements');
+      recommendations.bullet_improvements.forEach((item) => {
+        addText(`Original: "${item.original}"`);
+        addText(`Suggested: "${item.improved}"`);
+        if (item.explanation) {
+          addText(`Why: ${item.explanation}`);
+        }
+        y += 2;
+      });
+    }
 
-    recommendations.weaknesses.forEach((item) => {
-      addText(`${item.title}: ${item.description}`);
-    });
+    if (
+      recommendations.missing_skills &&
+      recommendations.missing_skills.length > 0
+    ) {
+      addHeading('9. Recommended Skills to Learn');
+      recommendations.missing_skills.forEach((item) => {
+        const priority = item.priority ? ` [${item.priority} Priority]` : '';
+        addText(`• ${item.skill}${priority}: ${item.reason}`);
+      });
+    }
 
-    addHeading('7. Improved Resume Bullet Points');
-
-    recommendations.bullet_improvements.forEach((item) => {
-      addText(`Original: ${item.original}`);
-      addText(`Suggested: ${item.improved}`);
-    });
-
-    addHeading('8. Recommended Skills');
-
-    recommendations.skill_recommendations.forEach((item) => {
-      addText(`${item.skill}: ${item.reason}`);
-    });
+    if (
+      recommendations.ats_recommendations &&
+      recommendations.ats_recommendations.length > 0
+    ) {
+      addHeading('10. Recommended ATS Keywords');
+      addText(recommendations.ats_recommendations.join(', '));
+    }
   }
 
   // Footer
@@ -183,9 +250,9 @@ export function generateAnalysisPDF(
     );
   }
 
-  const filename = result.filename
+  const cleanFilename = resumeName
     .replace(/\.[^/.]+$/, '')
     .replace(/[^a-z0-9_-]/gi, '_');
 
-  pdf.save(`${filename}_analysis_report.pdf`);
+  pdf.save(`${cleanFilename}_analysis_report.pdf`);
 }

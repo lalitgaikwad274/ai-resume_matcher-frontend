@@ -1,16 +1,23 @@
-import { Copy, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Copy, ArrowRight, Check } from 'lucide-react';
 
 interface Props {
   original: string;
   improved: string;
+  explanation?: string;
 }
 
 export default function BulletImprovementCard({
   original,
   improved,
+  explanation,
 }: Props) {
+  const [copied, setCopied] = useState(false);
+
   const copyImproved = async () => {
     await navigator.clipboard.writeText(improved);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -35,12 +42,18 @@ export default function BulletImprovementCard({
         </div>
       </div>
 
+      {explanation && (
+        <div className="bullet-explanation">
+          <strong>Why this helps:</strong> {explanation}
+        </div>
+      )}
+
       <button
         className="copy-button"
         onClick={copyImproved}
       >
-        <Copy size={16} />
-        Copy suggestion
+        {copied ? <Check size={16} /> : <Copy size={16} />}
+        {copied ? 'Copied!' : 'Copy suggestion'}
       </button>
     </div>
   );

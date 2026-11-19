@@ -4,6 +4,14 @@ export interface SkillGroup {
   [category: string]: string[];
 }
 
+export interface EducationItem {
+  degree?: string | null;
+  institution?: string | null;
+  dates?: string | null;
+}
+
+export type Education = string | EducationItem;
+
 export interface ResumeAnalysis {
   filename: string;
   word_count?: number;
@@ -11,7 +19,7 @@ export interface ResumeAnalysis {
   skills: SkillGroup;
   total_skills: number;
   experience_mentions: string[];
-  education: string[];
+  education: Education[];
 }
 
 export interface MatchAnalysis {
@@ -26,7 +34,6 @@ export interface MatchAnalysis {
   preferred_total: number;
 }
 
-
 export interface JobAnalysis {
   required_skills?: SkillGroup;
   preferred_skills?: SkillGroup;
@@ -37,6 +44,7 @@ export interface JobAnalysis {
 
 export interface AnalysisResult {
   job_title?: string;
+  filename?: string;
   resume_analysis: ResumeAnalysis;
   job_analysis?: JobAnalysis;
   match_analysis: MatchAnalysis;

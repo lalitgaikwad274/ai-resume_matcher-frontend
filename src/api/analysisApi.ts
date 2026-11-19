@@ -1,4 +1,5 @@
 import axios from 'axios';
+import type { AnalysisResult } from '../types/analysis';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -10,7 +11,7 @@ export const analyzeResume = async (
   jobTitle: string,
   jobDescription: string,
   includeAI = true,
-) => {
+): Promise<AnalysisResult> => {
   const formData = new FormData();
 
   formData.append('file', file);
@@ -18,7 +19,7 @@ export const analyzeResume = async (
   formData.append('job_description', jobDescription);
   formData.append('include_ai', String(includeAI));
 
-  const response = await api.post(
+  const response = await api.post<AnalysisResult>(
     '/analysis/full',
     formData,
   );
