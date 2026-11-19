@@ -12,11 +12,6 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import skillsImg from '../../assets/Skills.png';
-import {
-  MobileReactGraphic,
-  LaptopPythonGraphic,
-  DatabaseGearGraphic,
-} from '../CardVisualGraphics';
 
 interface AreasToImproveSectionProps {
   careerGoal: string;
