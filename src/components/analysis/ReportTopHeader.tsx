@@ -96,45 +96,6 @@ export const ReportTopHeader: React.FC<ReportTopHeaderProps> = ({
             </button>
           </div>
         </div>
-
-        {/* Horizontal Sub-Navigation Tabs */}
-        <div className="report-subnav-tabs">
-          <button
-            type="button"
-            className={`subnav-tab-btn ${activeNav === 'overview' || activeNav === 'dashboard' ? 'active' : ''}`}
-            onClick={() => onSelectNav('overview')}
-          >
-            Overview
-          </button>
-          <button
-            type="button"
-            className={`subnav-tab-btn ${activeNav === 'strengths' ? 'active' : ''}`}
-            onClick={() => onSelectNav('strengths')}
-          >
-            Strengths
-          </button>
-          <button
-            type="button"
-            className={`subnav-tab-btn ${activeNav === 'areas-to-improve' ? 'active' : ''}`}
-            onClick={() => onSelectNav('areas-to-improve')}
-          >
-            Areas to improve
-          </button>
-          <button
-            type="button"
-            className={`subnav-tab-btn ${activeNav === 'skills' || activeNav === 'job-match' ? 'active' : ''}`}
-            onClick={() => onSelectNav('skills')}
-          >
-            Skills
-          </button>
-          <button
-            type="button"
-            className={`subnav-tab-btn ${activeNav === 'bullet-rewrites' || activeNav === 'career-tips' ? 'active' : ''}`}
-            onClick={() => onSelectNav('bullet-rewrites')}
-          >
-            Bullet rewrites
-          </button>
-        </div>
       </header>
     </>
   );

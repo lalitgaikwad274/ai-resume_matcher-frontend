@@ -74,11 +74,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
           <button
             type="button"
-            className={`sidebar-nav-item ${activeNav === 'job-match' ? 'active' : ''}`}
-            onClick={() => handleNavClick('job-match')}
+            className={`sidebar-nav-item ${activeNav === 'strengths' ? 'active' : ''}`}
+            onClick={() => handleNavClick('strengths')}
           >
             <Briefcase size={18} />
-            <span>Job Match</span>
+            <span>Strengths</span>
           </button>
 
           <button

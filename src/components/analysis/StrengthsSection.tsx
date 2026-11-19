@@ -21,13 +21,16 @@ export const StrengthsSection: React.FC<StrengthsSectionProps> = ({ strengths })
               <div key={idx} className="strength-card-expanded">
                 <div className="strength-card-expanded-header">
                   <div className="strength-badge-num">{num}</div>
-                  <h3>{item.title}</h3>
-                  <div className="strength-confirmed-pill">
-                    <Check size={13} strokeWidth={3} />
-                    <span>Verified in Resume</span>
+                  <div className="strength-card-content">
+                    <h3>{item.title}</h3>
+                    <div className="strength-confirmed-pill">
+                      <Check size={13} strokeWidth={3} />
+                      <span>Verified in Resume</span>
+                    </div>
+                                    <p className="strength-card-expanded-desc">{item.explanation}</p>
+
                   </div>
                 </div>
-                <p className="strength-card-expanded-desc">{item.explanation}</p>
               </div>
             );
           })

@@ -137,9 +137,9 @@ export const AreasToImproveSection: React.FC<AreasToImproveSectionProps> = ({
                   {/* Left: Number + Vector Graphic */}
                   <div className="card-identity-col">
                     <span className="card-number-label">{itemNum}</span>
-                    <div className="card-illustration-wrap">
+                    {/* <div className="card-illustration-wrap">
                       {getCardGraphic(item.title, index)}
-                    </div>
+                    </div> */}
                   </div>
 
                   {/* Middle: Content */}

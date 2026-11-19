@@ -1791,16 +1791,21 @@ body {
 
 .strength-card-expanded-header {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 30px;
 }
 
 .strength-badge-num {
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 800;
   color: #059669;
   font-family: ui-monospace, monospace;
+}
+
+.strength-card-content{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .strength-card-expanded-header h3 {

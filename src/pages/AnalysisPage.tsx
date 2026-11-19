@@ -125,7 +125,7 @@ export default function AnalysisPage({ result, onAnalyzeAnother }: Props) {
         )}
 
         {/* SECTION: Skills Alignment & Gaps (Screenshot 2) */}
-        {(activeNav === 'skills' || activeNav === 'job-match') && (
+        {(activeNav === 'skills') && (
           <SkillsAlignmentSection
             matchedSkills={match.matched_required}
             missingSkills={match.missing_required}
