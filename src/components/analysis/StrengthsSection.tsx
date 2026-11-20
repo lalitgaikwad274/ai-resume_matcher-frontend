@@ -27,8 +27,7 @@ export const StrengthsSection: React.FC<StrengthsSectionProps> = ({ strengths })
                       <Check size={13} strokeWidth={3} />
                       <span>Verified in Resume</span>
                     </div>
-                                    <p className="strength-card-expanded-desc">{item.explanation}</p>
-
+                    <p className="strength-card-expanded-desc">{item.explanation}</p>
                   </div>
                 </div>
               </div>
